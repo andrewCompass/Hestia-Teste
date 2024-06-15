@@ -2,23 +2,30 @@ version: '3.9'
 
 services:
   postgres:
-    image: 'postgres:16'
+    image: 'postgres:15.2'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 01
-      POSTGRES_DB: ms-store
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: mydb_postgre
     ports:
-      - "5432:5432"
-
+      - 5432:5432
+    networks:
+      - my_network
   api:
     build:
-      context: ..
-      dockerfile: ms-store/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-store
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 01
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb_postgre
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
     ports:
       - "8082:8082"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
